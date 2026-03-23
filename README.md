@@ -1,10 +1,18 @@
 # Star Explorer
 
-An interactive Hertzsprung-Russell diagram and stellar classification visualiser built from the HYG star catalog, containing 107,860 stars from the Hipparcos, Yale Bright Star, and Gliese catalogs.
+An interactive space data science project built from real astronomical catalogs and NASA APIs. Contains two notebooks: a Hertzsprung-Russell stellar classification diagram and a near-Earth asteroid close approach tracker.
 
 ![HR Diagram](hr_diagram_preview.png)
 
-## What is the Hertzsprung-Russell Diagram?
+---
+
+## Projects
+
+### 1. Hertzsprung-Russell Diagram (`star_explorer.ipynb`)
+
+An interactive HR diagram built from the HYG star catalog containing 107,860 stars from the Hipparcos, Yale Bright Star, and Gliese catalogs.
+
+#### What is the Hertzsprung-Russell Diagram?
 
 The Hertzsprung-Russell (HR) diagram is one of the most important tools in astronomy. It plots stars by two properties:
 
@@ -21,9 +29,7 @@ When you plot enough stars, distinct structures emerge that reveal the life cycl
 | **White Dwarfs** | Lower-left. The dense, cooling remnants of dead stars. Van Maanen's Star is one of the nearest. |
 | **Red Dwarfs** | Lower-right. Small, dim, cool stars. The most common type in the galaxy. Proxima Centauri and Wolf 359 are examples. |
 
-## Spectral Classification
-
-Stars are classified by spectral type based on their surface temperature:
+#### Spectral Classification
 
 | Class | Colour | Temperature | Example |
 |---|---|---|---|
@@ -35,74 +41,92 @@ Stars are classified by spectral type based on their surface temperature:
 | K | Orange | 3,700-5,200 K | Arcturus |
 | M | Red | < 3,700 K | Betelgeuse |
 
-A useful mnemonic: **O**h **B**e **A** **F**ine **G**uy/**G**irl, **K**iss **M**e.
+Mnemonic: **O**h **B**e **A** **F**ine **G**uy/**G**irl, **K**iss **M**e.
 
-## Data Source
+#### Data Source
 
-The [HYG Database](https://www.astronexus.com/projects/hyg) (v3.7) is a compilation of stellar data from three catalogs:
+The [HYG Database](https://www.astronexus.com/projects/hyg) (v3.7), a compilation of stellar data from Hipparcos, Yale Bright Star, and Gliese catalogs. Licensed under [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/).
 
-- **H**ipparcos Catalog: High-accuracy positional and parallax data for ~118,000 stars
-- **Y**ale Bright Star Catalog: Data on all naked-eye stars including traditional names and Bayer designations
-- **G**liese Catalog of Nearby Stars: Comprehensive catalog of stars within 75 light years of the Sun
+---
 
-Licensed under [CC BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/).
+### 2. Near-Earth Asteroid Tracker (`asteroid_explorer.ipynb`)
+
+An interactive tracker of near-Earth asteroid close approaches built from NASA's NeoWs API, covering 7,940 close approaches from one year back to six months forward.
+
+#### What are Near-Earth Objects?
+
+Near-Earth Objects (NEOs) are asteroids and comets with orbits that bring them within 1.3 AU of the Sun. NASA's Planetary Defense Coordination Office tracks these objects and maintains a Sentry list of objects requiring active monitoring.
+
+| Term | Definition |
+|---|---|
+| **Potentially Hazardous Asteroid (PHA)** | Passes within 0.05 AU of Earth and is larger than ~140m |
+| **Sentry Object** | Actively monitored by NASA's impact risk assessment system |
+| **Lunar Distance (LD)** | ~384,400 km. Used as a standard unit for close approach distances. |
+
+#### Dataset Summary
+
+- **7,940** total close approaches tracked
+- **358** potentially hazardous asteroids
+- **571** Sentry objects under active monitoring
+- **Closest approach:** (2025 UC11) at 6,599 km, closer than many satellites
+- **Fastest approach:** (2022 HB4) at 52.9 km/s
+
+#### Visuals
+
+1. **Close Approach Scatter Plot** — All 7,940 objects plotted by date and miss distance. Bubble size scaled to estimated diameter. Red rings indicate potentially hazardous asteroids. Moon reference line at 1 LD.
+2. **Animated Timeline** — Month-by-month animation of close approaches building over time, with play/pause and scrub controls.
+
+#### Data Source
+
+[NASA NeoWs API](https://api.nasa.gov). Free API key available at api.nasa.gov. The DEMO_KEY works for testing but is rate limited to 30 requests per hour.
+
+---
 
 ## Getting Started
 
 ### Requirements
 
 ```bash
-pip install pandas numpy plotly requests jupyter
-```
-
-Or install from the requirements file:
-
-```bash
 pip install -r requirements.txt
 ```
 
-### Download the Data
+### Data Setup
 
-The data file is not included in this repo due to size. Download it by running the first cell in the notebook, or manually:
+**HR Diagram:** Run the first cell in `star_explorer.ipynb` to download `hygdata_v37.csv.gz` locally.
 
-```python
-import urllib.request
-urllib.request.urlretrieve(
-    'https://www.astronexus.com/downloads/catalogs/hygdata_v37.csv.gz',
-    'hygdata_v37.csv.gz'
-)
-```
+**Asteroid Tracker:** Get a free API key at `https://api.nasa.gov` and paste it into the `API_KEY` variable in `asteroid_explorer.ipynb`. The notebook fetches fresh data on each run.
 
-### Run the Notebook
+### Running
+
+Open in VS Code with the Jupyter extension installed, or run:
 
 ```bash
-jupyter notebook star_explorer.ipynb
+jupyter notebook
 ```
 
-Or open directly in VS Code with the Jupyter extension installed.
+---
 
-## Visuals
+## Repo Structure
 
-The notebook produces two interactive Plotly figures:
+```
+star-explorer/
+  star_explorer.ipynb        HR diagram notebook
+  asteroid_explorer.ipynb    Near-Earth asteroid tracker
+  hr_diagram.html            Interactive HR diagram
+  hr_diagram_preview.png     Preview image
+  asteroid_approaches.html   Close approach scatter plot
+  asteroid_animated.html     Animated close approach timeline
+  hygdata_v37.csv.gz         HYG star catalog (gitignored)
+  requirements.txt           Python dependencies
+```
 
-1. **Basic HR Diagram** — 50,000 stars sampled from the full catalog, coloured by B-V colour index, with named stars labelled
-2. **Annotated HR Diagram** — Same diagram with region labels (Main Sequence, Red Giants, Supergiants, White Dwarfs, Red Dwarfs) and spectral class markers along the top axis
-
-Both figures are exported as standalone HTML files that can be opened in any browser without any dependencies.
-
-## Key Findings
-
-- The main sequence is clearly visible as a diagonal band containing the vast majority of stars
-- K and F type stars dominate the catalog (28,845 and 24,594 respectively), reflecting the Hipparcos survey's coverage
-- The Sun (G2V, absolute magnitude 4.85, colour index 0.656) sits exactly where stellar physics predicts on the main sequence
-- White dwarfs form a distinct lower-left cluster, with Van Maanen's Star as one of the most isolated examples
-- Red supergiants like Betelgeuse (M2Iab) and Antares (M1.5Iab) sit dramatically above and to the right of the main sequence
+---
 
 ## Tools
 
-- **Python** with pandas, numpy, plotly
-- **Data**: HYG v3.7 stellar catalog
-- **Environment**: Jupyter Notebook / VS Code
+- **Python:** pandas, numpy, plotly, requests
+- **Data:** HYG v3.7 stellar catalog, NASA NeoWs API
+- **Environment:** Jupyter Notebook / VS Code
 
 ## Author
 
